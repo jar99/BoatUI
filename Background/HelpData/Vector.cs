@@ -30,7 +30,7 @@ namespace BoatUI.Background.HelpData
         public double X { get => _x; set => _x = value; }
         public double Y { get => _y; set => _y = value; }
 
-        protected internal double getR()
+        internal protected double getR()
         {
             return Math.Sqrt(_x * _x + _y * _y);
         }

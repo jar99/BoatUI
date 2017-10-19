@@ -23,23 +23,41 @@ namespace BoatUI.Background
         //Controlls the main thread loop
         private bool _shouldRun;
 
-        
+        internal SerialPortModule Serialport { get => _serialport; }
+
         public BackgroundApp()
         {
             _serialport = new SerialPortModule();
         }
 
         //This method is used to run the background update delay is there to limit the clock speed
-        public void StartThreadBackground(int delay = 0)
+        public void StartBackgroundThread(int delay = 0)
         {
             //pre loop code goes here
 
             //The thread starter for the background Loop
-            _backroundLoopThread = new Thread(() => this.BackgroundLoop(1));
+            _backroundLoopThread = new Thread(() => this.StartBackground(1));
             _backroundLoopThread.Start();
 
             //Post thread start code here 
 
+        }
+
+        private void StartBackground(int delay)
+        {
+            _shouldRun = true;
+            while (_shouldRun)
+            {
+                //This code gets run every time it loops
+                //_serialport.ClearWriteQue();
+
+
+                //Code that delays the thread
+                Thread.Sleep(delay);
+            }
+
+            //Post closing code here
+            _serialport.ClosePort();
         }
 
         //This method is here to close the background loop.
@@ -52,24 +70,7 @@ namespace BoatUI.Background
             _shouldRun = false;
             //Closes the thread
             _backroundLoopThread.Join();
-        }
-
-        private void BackgroundLoop(int delay)
-        {
-            _shouldRun = true;
-            while (_shouldRun)
-            {
-                //This code gets run every time it loops
-                _serialport.ClearReadQue();
-                _serialport.ClearWriteQue();
-
-
-                //Code that delays the thread
-                Thread.Sleep(delay);
-            }
-
-            //Post closing code here
-            _serialport.ClosePort();
+            Console.WriteLine("The background has closed");
         }
 
     }

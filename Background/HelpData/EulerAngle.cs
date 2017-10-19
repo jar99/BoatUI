@@ -6,17 +6,22 @@ using System.Threading.Tasks;
 
 namespace BoatUI.Background.HelpData
 {
-    public class EulerAngle : Vector2
+    public class EulerAngle2 : Vector2
     {
        
-        public EulerAngle()
+        public EulerAngle2()
         {
             SetAngle(0);
         }
 
-        public EulerAngle(double angle)
+        public EulerAngle2(double angle)
         {
             SetAngle(angle);
+        }
+
+        public double Angle
+        {
+            get => GetAgnle();
         }
 
         public void SetAngle(double angle)
@@ -25,18 +30,32 @@ namespace BoatUI.Background.HelpData
             _y = Math.Sin(angle);
         }
 
+        public void SetAngle(EulerAngle2 angle)
+        {
+
+        }
+
         public double GetAgnle()
         {
             return Math.Atan2(_y, _x);
         }
 
-        public void AddAngle(double deltaAngle)
+
+        public void RotateAngle(double deltaAngle)
         {
-            double x = _x + Math.Cos(deltaAngle);
-            double y = _y + Math.Sin(deltaAngle);
-            double r = Math.Sqrt(x * x + y * y);
-            _x = x;
-            _y = y;
+            double x = X * Math.Cos(deltaAngle) - Y * Math.Sin(deltaAngle);
+            double y = Y * Math.Cos(deltaAngle) + X * Math.Sin(deltaAngle);
+            X = x;
+            Y = y;
         }
+
+        public void RotateAngle(EulerAngle2 angle)
+        {
+            double x = X * angle.X - Y * angle.Y;
+            double y = Y * angle.X + X * angle.Y;
+            X = x;
+            Y = y;
+        }
+
     }
 }
