@@ -60,7 +60,8 @@ namespace BoatUI.Background
             while (_shouldRun)
             {
                 //This code gets run every time it loops
-                _serialport.ClearQue();
+                _serialport.ClearReadQue();
+                _serialport.ClearWriteQue();
 
 
                 //Code that delays the thread

@@ -33,6 +33,7 @@ namespace BoatUI.Background.Serial
             _port = new SerialPort();
         }
 
+        //Function that is used to open the serial port.
         public void OpenPort(string portName, int baudRate)
         {
             if (_port.IsOpen)
@@ -42,17 +43,67 @@ namespace BoatUI.Background.Serial
             }
             _port.PortName = portName;
             _port.BaudRate = baudRate;
-            _port.DtrEnable = true;
         }
 
-        internal void ClearQue()
-        {
-            throw new NotImplementedException();
-        }
-
+        //Public method used to close the port.
         internal void ClosePort()
         {
-            throw new NotImplementedException();
+            //Checks if the port is already closed.
+            if (_port.IsOpen)
+            {
+                Console.WriteLine("Port has been closed.");
+                _port.Close();
+                return;
+            }
+            Console.WriteLine("The port is already closed.");
         }
+
+        //Method that reads all avalable lines in the serial port.
+        public void ClearReadQue()
+        {
+            //Return if the port is closed
+            if (!_port.IsOpen)
+                return;
+
+            string newLine = _port.ReadLine();
+            while (!newLine.Equals(""))
+            {
+                newLine = _port.ReadLine();
+                _readDataQue.Add(newLine);
+            }
+
+        }
+
+        public void ClearWriteQue()
+        {
+            //Return if the port is closed 
+            if (!_port.IsOpen)
+                return;
+
+            //For each item in the que we are going to loop through
+            foreach (var item in _sendDataQue.TakeWork())
+            {
+                //We are going to write each item in the que to the serial port as a new line.
+                _port.WriteLine(item);
+            }
+        }
+
+        //Static function to stringafy the BaudRate enum
+        public static string[] AvalableBaudRates()
+        {
+            string[] rates = new string[BaudRate.Length];
+            for (int i = 0; i < rates.Length; i++)
+            {
+                rates[i] = BaudRate[i].ToString() + " bits";
+            }
+            return rates;
+        }
+
+        //Returns all avalable com ports
+        public static string[] AvalablePorts()
+        {
+            return SerialPort.GetPortNames();
+        }
+
     }
 }
